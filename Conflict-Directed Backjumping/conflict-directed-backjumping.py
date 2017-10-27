@@ -8,13 +8,16 @@ class node:
         self.D = [] # doamin
         self.color = ''
     def inference(self, csp):
+        stringExpanding = self.val + ' = ' + self.color
         for node in self.neighbors:
             if (csp.DN[node]).color == self.color:
-                print 'conflict with ' + node
+                stringExpanding += ', conflict with ' + node
                 if node not in self.conflictSet:
                     self.conflictSet.add(node)
-                    self.conflictArray.append(node)                  
+                    self.conflictArray.append(node)   
+                print stringExpanding             
                 return False
+        print stringExpanding   
         return True
 class CSP:
     def __init__(self, dn, l):
@@ -31,8 +34,6 @@ def backtrack(index, csp):
     unassiged = (csp.L)[index]
     for color in list(csp.DN[unassiged].D): 
         csp.DN[unassiged].color = color
-        stringExpanding = unassiged + ' = ' + color
-        print stringExpanding
         if (csp.DN[unassiged]).inference(csp):
             result = backtrack(index + 1, csp)
             if result[0]:
@@ -50,7 +51,7 @@ def backtrack(index, csp):
             if item not in csp.DN[lastConflict].conflictSet and item != csp.DN[lastConflict].val:
                 csp.DN[lastConflict].conflictSet.add(item)
                 csp.DN[lastConflict].conflictArray.append(item)
-        stringExpanding +=  '\n      So conflict set for ' + lastConflict + ' is: ' + str(csp.DN[lastConflict].conflictArray)
+        stringExpanding +=  ', so conflict set for ' + lastConflict + ' is: ' + str(csp.DN[lastConflict].conflictArray)
         stringExpanding += ', jump to ' + lastConflict
         print stringExpanding
         return (False, lastConflict)
