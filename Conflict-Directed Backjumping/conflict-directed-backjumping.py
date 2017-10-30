@@ -19,6 +19,10 @@ class node:
                 return False
         print stringExpanding   
         return True
+    def clearConflict(self):
+        self.conflictSet.clear()
+        del self.conflictArray[:]
+    
 class CSP:
     def __init__(self, dn, l):
         self.DN = dn
@@ -46,14 +50,15 @@ def backtrack(index, csp):
         stringExpanding = unassiged + '\'s conflict set = ' + str(csp.DN[unassiged].conflictArray)
         lastConflict = csp.DN[unassiged].conflictArray[len(csp.DN[unassiged].conflictArray) - 1]
         index = csp.L.index(lastConflict)
-        stringExpanding += '\n' + lastConflict + '\'s conflict set ' + str(csp.DN[lastConflict].conflictArray)
+        stringExpanding += '\n' + lastConflict + '\'s previous conflict set is: ' + str(csp.DN[lastConflict].conflictArray)
         for item in csp.DN[unassiged].conflictArray:
             if item not in csp.DN[lastConflict].conflictSet and item != csp.DN[lastConflict].val:
                 csp.DN[lastConflict].conflictSet.add(item)
                 csp.DN[lastConflict].conflictArray.append(item)
-        stringExpanding +=  ', so conflict set for ' + lastConflict + ' is: ' + str(csp.DN[lastConflict].conflictArray)
-        stringExpanding += ', jump to ' + lastConflict
+        stringExpanding +=  ', combined conflict set is: ' + str(csp.DN[lastConflict].conflictArray)
+        stringExpanding += ', then jump to ' + lastConflict
         print stringExpanding
+        csp.DN[unassiged].clearConflict()
         return (False, lastConflict)
     return (False, None)
 
